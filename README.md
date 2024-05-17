@@ -1,1 +1,1 @@
-# CustomerAnalysisBot
+# Finbot

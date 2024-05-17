@@ -1,0 +1,25 @@
+.watermark {
+    position: fixed;
+    bottom: 10px; /* Adjust the distance from the bottom */
+    left: 92%;
+    transform: translateX(-50%);
+    opacity:0.8;
+    font-size: 14px;
+    color: white; /* Adjust the color and opacity */
+}
+.watermark img {
+    height: 70px; /* Adjust the height of the image */
+    width: 90px;
+    color: #111;
+    background: transparent;
+    filter: drop-shadow(0 0 0.75rem rgb(0, 0, 0));
+    margin-left: 5px; /* Add some space between text and image */
+    text-align: end; /* Align image vertically with text */
+    padding-bottom: 20px;
+}
+
+.img-txt{
+    font-size: 12px;
+    position: absolute;
+    top: 8px;
+}
