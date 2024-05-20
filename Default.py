@@ -31,7 +31,7 @@ def load_css():
         st.markdown(css, unsafe_allow_html=True)
 load_css()
 div=f"""
-    <div class="watermark"> <span class="img-txt">Powered by</span> <img src="app\static\logo-1.png" width=32 height=32 /></div>
+    <div class="watermark"> <span class="img-txt">Powered by</span> <img src= r"static/logo-1.png" width=32 height=32 /></div>
     """
 st.sidebar.markdown(div,unsafe_allow_html=True)
 st.cache_resource()
