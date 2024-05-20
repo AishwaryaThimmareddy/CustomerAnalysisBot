@@ -1,1 +1,1 @@
-# BOT
+# Finbot

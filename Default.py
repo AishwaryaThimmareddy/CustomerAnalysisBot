@@ -1,11 +1,9 @@
 import os
-from dotenv import load_dotenv, find_dotenv
 from llama_index import (
     SimpleDirectoryReader,
     ServiceContext,
     StorageContext,
     VectorStoreIndex,
-    load_index_from_storage
    
 )
 from llama_index.query_engine import RetrieverQueryEngine
@@ -31,7 +29,7 @@ def load_css():
         st.markdown(css, unsafe_allow_html=True)
 load_css()
 div=f"""
-    <div class="watermark"> <span class="img-txt">Powered by</span> <img src= r"static/logo-1.png" width=32 height=32 /></div>
+    <div class="watermark"> <span class="img-txt">Powered by</span> <img src="app/static/GPTSpherelogo.png" width=32 height=32></div>
     """
 st.sidebar.markdown(div,unsafe_allow_html=True)
 st.cache_resource()
@@ -95,51 +93,65 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
  
+def set_png_as_page_bg(png_file):
+    bin_str = get_base64_of_bin_file(png_file)
+    page_bg_img = '''
+    <style>
+    .main {
+    background-image: url("data:image/png;base64,%s");
+    background-size: cover;
+    }
+   
+   
+    }
+    </style>
+    ''' % bin_str
+   
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+    return
+ 
+set_png_as_page_bg(r'background.png')
+ 
 @st.cache_resource()
 def initialize_rag():
     """
     Initializes the AdvancedRAG object and caches results.
     """
    
-
     class AdvancedRAG:
         def __init__(self):
             _ = st.secrets["OPENAI_API_KEY"]
             # load documents
-        #     self.documents = SimpleDirectoryReader(r"test", required_exts=['.pdf']).load_data()
+            self.documents = SimpleDirectoryReader(r"test", required_exts=['.pdf']).load_data()
    
-        #     # global variables used later in code after initialization
-        #     self.retriever = None
-        #     self.reranker = None
-        #     self.query_engine = None
+            # global variables used later in code after initialization
+            self.retriever = None
+            self.reranker = None
+            self.query_engine = None
    
-        #     self.bootstrap()
-        # # initialize LLMs in below i provided different LLm Methods you can selectras your choice
-        # def bootstrap(self):
+            self.bootstrap()
+        # initialize LLMs in below i provided different LLm Methods you can selectras your choice
+        def bootstrap(self):
        
             llm = OpenAI(model="gpt-4",
                         api_key=st.secrets["OPENAI_API_KEY"],
-                        temperature=0.1,system_prompt="You are an Ai,you as the ability to predict the future values,You have a expertise knowledge in understanding the documents provided and after understanding thoroughly you are able to predict the future outcomes based on the past outcomes and on the present data provided.Your Future outcome predictions should be valid and accurate.Don't provide the false response. ")
+                        temperature=0.1,system_prompt="You have a expertise knowledge in understanding the documents provided and after understanding thoroughly you are able to predict the future outcomes based on the past outcomes and on the present data provided.Your Future outcome predictions should be valid and accurate.Don't provide the false response. ")
                
            
        
-        #     # initialize service context (set chunk size)
+            # initialize service context (set chunk size)
             service_context = ServiceContext.from_defaults(chunk_size=1024, llm=llm,embed_model=HuggingFaceEmbedding())
-            # nodes = service_context.node_parser.get_nodes_from_documents(self.documents)
-            # rebuild storage context
-            storage_context = StorageContext.from_defaults(persist_dir="database1")
-
-            # load index
-            index = load_index_from_storage(storage_context)
-            # # initialize storage context (by default it's in-memory)
-            # storage_context = StorageContext.from_defaults()
-            # storage_context.docstore.add_documents(nodes)
+            nodes = service_context.node_parser.get_nodes_from_documents(self.documents)
    
-            # index = VectorStoreIndex(
-            #     nodes=nodes,
-            #     storage_context=storage_context,
-            #     service_context=service_context,
-            # )
+            # initialize storage context (by default it's in-memory)
+            storage_context = StorageContext.from_defaults()
+            storage_context.docstore.add_documents(nodes)
+   
+            index = VectorStoreIndex(
+                nodes=nodes,
+                storage_context=storage_context,
+                service_context=service_context,
+            )
        
             # We can pass in the index, doctore, or list of nodes to create the retriever
             self.retriever = BM25Retriever.from_defaults(similarity_top_k=2, index=index)
