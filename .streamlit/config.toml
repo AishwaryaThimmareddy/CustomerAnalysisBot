@@ -1,5 +1,5 @@
-[server]
-enableStaticServing = true
-
 [theme]
 base="light"
+
+[server]
+enableStaticServing = true
