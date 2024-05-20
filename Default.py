@@ -1,8 +1,8 @@
 import streamlit as st
 import os
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores.faiss import FAISS
-from langchain_openai import ChatOpenAI
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores.faiss import FAISS
+from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQAWithSourcesChain
 import base64
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
